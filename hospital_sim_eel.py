@@ -57,6 +57,9 @@ def run_simulation(arrival_rate, sim_time, reception_n, doctor_n,
             yield env.timeout(service_time(sp))
     
     def generator(env, reception, doctor, lab, pharmacy):
+        if arrival_rate <= 0:
+            return
+
         while True:
             inter_arrival = random.expovariate(arrival_rate / 60.0)
             yield env.timeout(inter_arrival)

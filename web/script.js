@@ -4,7 +4,7 @@ async function runSimulation() {
     const statusDiv = document.getElementById('status');
     statusDiv.textContent = 'Running simulation... Please wait...';
     statusDiv.className = 'status';
-    
+
     const params = {
         arrival_rate: parseFloat(document.getElementById('arrival_rate').value),
         sim_time: parseFloat(document.getElementById('sim_time').value),
@@ -17,17 +17,44 @@ async function runSimulation() {
         sl: parseFloat(document.getElementById('sl').value),
         sp: parseFloat(document.getElementById('sp').value)
     };
-    
+
     try {
+        validateParams(params);
         const result = await eel.run_simulation_api(params)();
         displayResults(result);
         statusDiv.textContent = '✅ Simulation completed successfully!';
         statusDiv.className = 'status success';
     } catch (error) {
         console.error(error);
-        statusDiv.textContent = '❌ Error: ' + error;
+        statusDiv.textContent = '❌ Error: ' + (error.message || error);
         statusDiv.className = 'status error';
     }
+}
+
+function validateParams(params) {
+    if (isNaN(params.arrival_rate) || params.arrival_rate < 0) {
+        throw new Error('Arrival rate must be a number greater than or equal to 0.');
+    }
+    if (isNaN(params.sim_time) || params.sim_time <= 0) {
+        throw new Error('Simulation time must be a number greater than 0.');
+    }
+    if (isNaN(params.reception_n) || params.reception_n <= 0) {
+        throw new Error('Receptionists must be at least 1.');
+    }
+    if (isNaN(params.doctor_n) || params.doctor_n <= 0) {
+        throw new Error('Doctors must be at least 1.');
+    }
+    if (isNaN(params.lab_n) || params.lab_n < 0) {
+        throw new Error('Lab technicians must be 0 or greater.');
+    }
+    if (isNaN(params.pharmacy_n) || params.pharmacy_n <= 0) {
+        throw new Error('Pharmacy counters must be at least 1.');
+    }
+    ['sr', 'sd', 'sl', 'sp'].forEach(key => {
+        if (isNaN(params[key]) || params[key] <= 0) {
+            throw new Error('All service rates must be numbers greater than 0.');
+        }
+    });
 }
 
 function displayResults(result) {
@@ -121,13 +148,14 @@ function updateCharts(result) {
 function updateAnalysis(result) {
     const analysisDiv = document.getElementById('analysis');
     const totalTime = result.total_time;
+    const bottleneckPercent = totalTime > 0 ? (result.wait[result.bottleneck] / totalTime) * 100 : 0;
     
     analysisDiv.innerHTML = `
         <div class="analysis-section">
             <h3>🎯 Bottleneck Analysis</h3>
             <p><strong>Critical Stage:</strong> ${result.bottleneck.toUpperCase()}</p>
             <p><strong>Recommendation:</strong> ${result.advice}</p>
-            <p><strong>Impact:</strong> The bottleneck stage contributes ${((result.wait[result.bottleneck] / totalTime) * 100).toFixed(1)}% of total waiting time.</p>
+            <p><strong>Impact:</strong> The bottleneck stage contributes ${bottleneckPercent.toFixed(1)}% of total waiting time.</p>
         </div>
         
         <div class="analysis-section">
@@ -203,5 +231,7 @@ function showTab(tabName) {
     });
     
     document.getElementById(`${tabName}-tab`).classList.add('active');
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
 }
