@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Queue Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Hospital Queue Simulation System</h1>
+            <p>Advanced Healthcare Analytics Platform</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-panel">
+                <h2>📝 Configuration Parameters</h2>
+                
+                <div class="param-group">
+                    <h3>Basic Parameters</h3>
+                    <div class="param-row">
+                        <label>Arrival Rate (patients/hour):</label>
+                        <input type="number" id="arrival_rate" value="30" step="5">
+                    </div>
+                    <div class="param-row">
+                        <label>Simulation Time (hours):</label>
+                        <input type="number" id="sim_time" value="8" step="1">
+                    </div>
+                </div>
+
+                <div class="param-group">
+                    <h3>Staffing Levels</h3>
+                    <div class="param-row">
+                        <label>👥 Receptionists:</label>
+                        <input type="number" id="reception_n" value="2" min="1">
+                    </div>
+                    <div class="param-row">
+                        <label>👨‍⚕️ Doctors:</label>
+                        <input type="number" id="doctor_n" value="3" min="1">
+                    </div>
+                    <div class="param-row">
+                        <label>🔬 Lab Technicians:</label>
+                        <input type="number" id="lab_n" value="1" min="0">
+                    </div>
+                    <div class="param-row">
+                        <label>💊 Pharmacy Counters:</label>
+                        <input type="number" id="pharmacy_n" value="2" min="1">
+                    </div>
+                </div>
+
+                <div class="param-group">
+                    <h3>Service Rates (patients/hour)</h3>
+                    <div class="param-row">
+                        <label>Reception Service Rate:</label>
+                        <input type="number" id="sr" value="20" step="2">
+                    </div>
+                    <div class="param-row">
+                        <label>Doctor Service Rate:</label>
+                        <input type="number" id="sd" value="6" step="1">
+                    </div>
+                    <div class="param-row">
+                        <label>Lab Service Rate:</label>
+                        <input type="number" id="sl" value="12" step="2">
+                    </div>
+                    <div class="param-row">
+                        <label>Pharmacy Service Rate:</label>
+                        <input type="number" id="sp" value="15" step="2">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="runSimulation()" class="btn-primary">▶ Run Simulation</button>
+                    <button onclick="resetDefaults()" class="btn-secondary">⟳ Reset Defaults</button>
+                </div>
+
+                <div id="status" class="status"></div>
+            </div>
+
+            <div class="results-panel">
+                <div class="results-header">
+                    <h2>📊 Simulation Results</h2>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="showTab('metrics')">Metrics</button>
+                        <button class="tab-btn" onclick="showTab('charts')">Charts</button>
+                        <button class="tab-btn" onclick="showTab('analysis')">Analysis</button>
+                    </div>
+                </div>
+
+                <div id="metrics-tab" class="tab-content active">
+                    <div class="metrics-grid" id="metrics"></div>
+                </div>
+
+                <div id="charts-tab" class="tab-content">
+                    <canvas id="waitTimeChart"></canvas>
+                    <canvas id="pieChart" style="margin-top: 30px;"></canvas>
+                </div>
+
+                <div id="analysis-tab" class="tab-content">
+                    <div id="analysis"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
