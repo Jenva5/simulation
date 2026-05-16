@@ -112,4 +112,4 @@ def run_simulation_api(params):
     return result
 
 eel.init(web_dir)
-eel.start('index.html', size=(1200, 800), port=8000)
+eel.start('index.html', size=(1200, 800), port=8001)
